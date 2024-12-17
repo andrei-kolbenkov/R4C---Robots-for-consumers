@@ -11,5 +11,5 @@ class RobotForm(forms.ModelForm):
     def clean_model(self):
         model = self.cleaned_data.get('model')
         if model not in self.ALLOWED_MODELS:
-            raise forms.ValidationError(f"Model '{model}' is not allowed.")
+            raise forms.ValidationError(f"Модель '{model}' не разрешена. Доступные модели: {self.ALLOWED_MODELS}")
         return model
