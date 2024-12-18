@@ -1,6 +1,8 @@
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from datetime import datetime, timedelta
 import json
 import openpyxl
@@ -29,6 +31,21 @@ def create_robot(request):
         else:
             return JsonResponse({'errors': form.errors}, status=400)
     return JsonResponse({'error': 'Разрешен только метод POST'}, status=405)
+
+
+
+def create_robot_form(request):
+    if request.method == 'POST':
+        form = RobotForm(request.POST)
+        if form.is_valid():
+            robot = form.save()
+            return render(request, 'create_robot_success.html', {'robot': robot})
+        else:
+            return render(request, 'create_robot_form.html', {'form': form, 'errors': form.errors})
+
+    # GET-запрос: отображение формы
+    form = RobotForm()
+    return render(request, 'create_robot_form.html', {'form': form})
 
 
 def export_weekly_summary(request):
@@ -72,4 +89,9 @@ def export_weekly_summary(request):
     workbook.save(response)
     return response
 
+
+def weekly_summary_view(request):
+    # Ссылка для скачивания отчета
+    download_url = reverse('weekly_summary')  # Ссылка на API для скачивания файла
+    return render(request, 'weekly_summary_page.html', {'download_url': download_url})
 

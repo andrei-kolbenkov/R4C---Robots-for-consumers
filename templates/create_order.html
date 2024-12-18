@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание заказа</title>
+    {% load static %}
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-image: url("{% static 'images/order.jpeg' %}");
+            background-size: cover; /* Изображение растягивается на весь экран */
+            background-position: center; /* Центрирование изображения */
+            background-attachment: fixed; /* Фон фиксируется при прокрутке */
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .error {
+            color: #e74c3c;
+        }
+        .success {
+            color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Создание заказа</h1>
+
+    <form id="orderForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="robot_serial">Серийный номер робота:</label>
+            <input type="text" id="robot_serial" name="robot_serial" required>
+        </div>
+        <button type="submit">Создать заказ</button>
+    </form>
+
+    <div id="message" class="message"></div>
+</div>
+
+<script>
+    document.getElementById("orderForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const robot_serial = document.getElementById("robot_serial").value;
+
+        const data = {
+            email: email,
+            robot_serial: robot_serial
+        };
+
+        fetch("/api/create_order/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(result => {
+            const messageElement = document.getElementById("message");
+            if (result.error) {
+                messageElement.textContent = result.error;
+                messageElement.className = "error";
+            } else {
+                messageElement.textContent = result.message + " (Заказ ID: " + result.order_id + ")";
+                messageElement.className = "success";
+            }
+        })
+        .catch(error => {
+            const messageElement = document.getElementById("message");
+            messageElement.textContent = "Произошла ошибка, попробуйте снова.";
+            messageElement.className = "error";
+        });
+    });
+</script>
+
+</body>
+</html>

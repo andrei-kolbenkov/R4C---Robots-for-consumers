@@ -1,5 +1,6 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.shortcuts import render
 import json
 from .models import Order
 from customers.models import Customer
@@ -35,3 +36,6 @@ def create_order(request):
             return JsonResponse({"message": f"Заказ создан, но робота '{robot_serial}' нет в наличии. Мы сообщим Вам о поступлении", "order_id": order.id})
 
     return JsonResponse({"error": "Неправильный метод запроса"}, status=400)
+
+def create_order_view(request):
+    return render(request, 'create_order.html')
