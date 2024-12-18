@@ -134,3 +134,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'your_email@gmail.com'  # ваш email
 EMAIL_HOST_PASSWORD = 'your_email_password'  # ваш пароль от почты
 DEFAULT_FROM_EMAIL = 'your_email@gmail.com'  # отправитель по умолчанию
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
